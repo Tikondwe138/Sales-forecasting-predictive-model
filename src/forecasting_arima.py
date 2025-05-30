@@ -1,31 +1,20 @@
 # src/forecasting_arima.py
+
+import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
 
-def train_arima_model(train_series, order=(2,1,2)):
-    """
-    Train an ARIMA model on the training data.
-
-    Args:
-        train_series (pd.Series): Time series training data.
-        order (tuple): ARIMA order (p,d,q).
-
-    Returns:
-        ARIMAResultsWrapper: Fitted ARIMA model.
-    """
+def train_arima_model(train_series, order=(2, 1, 2)):
     model = ARIMA(train_series, order=order)
     result = model.fit()
     return result
 
 def forecast_arima(model_fit, steps):
-    """
-    Forecast future values using the trained ARIMA model.
-
-    Args:
-        model_fit: Trained ARIMA model object.
-        steps (int): Number of periods to forecast.
-
-    Returns:
-        pd.Series: Forecasted values.
-    """
     forecast = model_fit.forecast(steps=steps)
+    return forecast
+
+def run_arima(df, target_column="Sales", forecast_steps=12):  # 🧠 capital "S"
+    df.index = pd.to_datetime(df.index)
+    series = df[target_column]
+    model_fit = train_arima_model(series)
+    forecast = forecast_arima(model_fit, forecast_steps)
     return forecast
