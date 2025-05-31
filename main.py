@@ -3,13 +3,11 @@ from src.forecasting_arima import run_arima
 from src.forecasting_prophet import run_prophet
 from src.evaluation import evaluate_forecast, print_evaluation_metrics
 
-
 def main():
-    # Load + prepare data
     print("[INFO] Loading and cleaning data...")
     df = load_and_prepare_data("data/sales_data.csv")
 
-    forecast_steps = 12  # number of periods to forecast
+    forecast_steps = 12
 
     # ARIMA Forecast
     print("\n[INFO] Running ARIMA forecast...")
@@ -20,17 +18,14 @@ def main():
 
     # Prophet Forecast
     print("\n[INFO] Running Prophet forecast...")
-    prophet_forecast = run_prophet(df, forecast_steps=forecast_steps)
-
-    # Simulate holdout by comparing to last actuals
+    prophet_forecast_df = run_prophet(df, forecast_steps=forecast_steps)
     prophet_true = df['Sales'].tail(forecast_steps)
-    prophet_predicted = prophet_forecast['yhat'].tail(forecast_steps).values  # 🔥 fix here
+    prophet_predicted = prophet_forecast_df['yhat'].values  # convert to array
 
     prophet_metrics = evaluate_forecast(prophet_true, prophet_predicted)
     print_evaluation_metrics(prophet_metrics, model_name="Prophet")
 
-    print("\n[INFO] Forecasting complete. Reports saved to /reports.")
-
+    print("\n[INFO] Forecasting complete.")
 
 if __name__ == "__main__":
     main()

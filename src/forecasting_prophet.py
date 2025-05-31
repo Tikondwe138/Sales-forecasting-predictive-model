@@ -1,10 +1,8 @@
-# src/forecasting_prophet.py
-
 import pandas as pd
 from prophet import Prophet
 
 def prepare_prophet_data(df):
-    prophet_df = df.reset_index().rename(columns={'Date': 'ds', 'Sales': 'y'})  # ✅ Match column name
+    prophet_df = df.reset_index().rename(columns={'Date': 'ds', 'Sales': 'y'})
     return prophet_df
 
 def train_prophet_model(prophet_df):
@@ -21,4 +19,4 @@ def run_prophet(df, forecast_steps=12):
     prophet_df = prepare_prophet_data(df)
     model = train_prophet_model(prophet_df)
     forecast = make_forecast(model, forecast_steps)
-    return forecast[['ds', 'yhat']]  # Optional: limit to just useful output
+    return forecast[['ds', 'yhat']].tail(forecast_steps)  # Only return forecasted part

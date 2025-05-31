@@ -6,3 +6,4 @@ statsmodels
 prophet
 streamlit
 plotly
+seaborn
